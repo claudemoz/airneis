@@ -1,0 +1,36 @@
+.categorieCard {
+  border-radius: 10px;
+  height: 250px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.imgContainer{
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow: hidden;
+  height: 200px;
+}
+
+.categorieCard img {
+  transition: 1s transform;
+  width: 500px;
+  height: 200px;
+  object-fit: contain;
+}
+.categorieCard img:hover{
+  transform: scale(1.1);
+ }
+
+.categorieName {
+  transition: 0.2s color;
+  height: 50px;
+  border-top: 1px solid var(--gray);
+  box-shadow: 0 6px 9px 0 rgb(0 0 0 / 15%);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 20px;
+}

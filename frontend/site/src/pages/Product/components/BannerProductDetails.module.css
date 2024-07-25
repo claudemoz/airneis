@@ -1,0 +1,15 @@
+.BannerProductDetails {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 150px;
+}
+
+.BannerProductDetails .productImage {
+  width: 100%;
+  height: 100%;
+}
+
+.BannerProductDetails .productImage img {
+  width: 100%;
+  height: 400px;
+}

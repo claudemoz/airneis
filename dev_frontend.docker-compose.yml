@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  frontend_site:
+    build:
+      context: ./frontend/site
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3000:3000
+    networks:
+      - frontend
+    volumes:
+    - ./frontend/site:/app
+    - /app/node_modules
+    restart: always
+
+  frontend_admin:
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3001:3001"
+    networks:
+      - frontend
+    volumes:
+    - ./frontend/admin:/app
+    - /app/node_modules
+    restart: always
+networks:
+  frontend:
+    driver: bridge

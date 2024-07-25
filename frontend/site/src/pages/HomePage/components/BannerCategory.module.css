@@ -1,0 +1,21 @@
+.carousel {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 575.98px) {
+  .carousel {
+    max-width: 1200px;
+    margin: auto;
+    margin-bottom: 30px;
+    width: 100%;
+  }
+}
+
+@media ((min-width: 576px) AND (max-width: 991.98px )) {
+  .carousel {
+    max-width: 1200px;
+    margin: auto;
+    margin-bottom: 30px;
+    width: 100%;
+  }
+}

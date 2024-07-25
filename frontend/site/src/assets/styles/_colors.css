@@ -1,0 +1,7 @@
+/* Background color*/
+
+.bg-white {
+  background-color: var(--white);
+}
+
+/* Text color */

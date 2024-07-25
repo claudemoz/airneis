@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  frontend_site:
+    container_name: frontend_site
+    image: registry.gitlab.com/claudetsiangana/app_ecommerce_bachelor_3/frontend/site:latest
+    environment:
+     - NODE_ENV=production
+    restart: unless-stopped
+
+  frontend_admin:
+    container_name: frontend_admin
+    image: registry.gitlab.com/claudetsiangana/app_ecommerce_bachelor_3/frontend/admin:latest
+    environment:
+     - NODE_ENV=production
+    restart: unless-stopped
+
+  nginx:
+    build: .
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - frontend_site
+      - frontend_admin
+    restart: always

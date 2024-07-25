@@ -1,0 +1,38 @@
+.banner {
+  margin-top: 2px;
+  height: 360px;
+  /* background: #fff;; */
+  background: #f9f1ef;;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bannerDescription{
+  padding: 30px 80px;
+  flex: 1;
+}
+.bannerDescriptionContent{
+  margin-top: 30px;
+  font-size: 13px;
+  line-height: 1.43;
+}
+.bannerImage {
+  flex: 1;
+  height: inherit;
+}
+
+/* Sur téléphone */
+@media (max-width: 699.33px) {
+  
+  .banner{
+    display: none;
+  }
+}
+
+/* Sur tablette */
+@media ((min-width: 700px) AND (max-width: 991.98px )) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 400px;
+  }
+}

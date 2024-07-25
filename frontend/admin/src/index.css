@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @layer base {
+  .active {
+    @apply bg-gray-700 text-white hover:text-slate-600 p-2 rounded;
+  }
+} */
+
+.active {
+  background-color: rgb(55 65 81);
+  color: #fff;
+}
+.active:hover {
+  color: rgb(71 85 105);
+}

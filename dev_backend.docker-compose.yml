@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      # 
+      - PORT=9000
+      - JWT_SECRET_KEY=b7ae8ecb-386b-413b-bc8b-ae8a4e08a5aa
+      - EXPIRATION_TOKEN=259200000 # 3j
+      - CLOUD_NAME=daogrxxyw
+      - CLOUD_KEY=176327649646981
+      - CLOUD_SECRET_KEY=qZbksEQjxI6q1qlGbNr9ksb7keQ
+      - STRIPE_SECRET_KEY =sk_test_51PHlm505JICd8VkdEFDpnsHaXbz36PtyLzxlPFRbCju2TYbqG4FAUCGa2fYQGSAhG3lQETCO6kFqqXNEig9md1y6002rlKFG0P
+      - SPARKPOST_SECRET_KEY=24a1ea7a0e198e01df4ac15827ea004dc3ff2dcb
+    ports:
+      - "9000:9000"
+    networks:
+      - backend
+    volumes:
+    - ./backend:/app
+    - /app/node_modules
+networks:
+  backend:
+    driver: bridge

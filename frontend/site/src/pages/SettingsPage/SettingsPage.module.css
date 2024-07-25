@@ -1,0 +1,18 @@
+.pageContainer {
+  display: grid; 
+  grid-template-columns: 30% 70%;
+  grid-gap:5px;
+}
+
+.leftContainer {
+  background-color: #f5f5f5;
+  margin-top: 10px;
+  margin-left: 40px;
+  height: 300px;
+  position:sticky;
+  top: 100px
+}
+
+.rightContainer {
+  padding: 1rem;
+}

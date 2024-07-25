@@ -1,0 +1,94 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  FRONTEND_SITE_IMAGE: $CI_REGISTRY_IMAGE/frontend/site
+  FRONTEND_ADMIN_IMAGE: $CI_REGISTRY_IMAGE/frontend/admin
+  BACKEND_IMAGE: $CI_REGISTRY_IMAGE/backend
+  FRONTEND_SERVER_PROD_IP: 51.68.47.77
+  BACKEND_SERVER_PROD_IP: 57.129.7.97
+  SERVER_PROD_USER: root
+
+
+default:
+  image: docker
+  services:
+    - docker:dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username container-registry-rw --password-stdin
+
+build_frontend_site:
+  stage: build
+  script:
+    - cd frontend/site/
+    - docker pull $FRONTEND_SITE_IMAGE:latest || true
+    - docker build --cache-from $FRONTEND_SITE_IMAGE:latest -f Dockerfile.prod -t $FRONTEND_SITE_IMAGE:$CI_COMMIT_SHORT_SHA -t $FRONTEND_SITE_IMAGE:latest .
+    - docker push $FRONTEND_SITE_IMAGE --all-tags
+  rules:
+  - if: $CI_COMMIT_REF_NAME == "main"
+
+build_frontend_admin:
+  stage: build
+  script:
+    - cd frontend/admin/
+    - docker pull $FRONTEND_ADMIN_IMAGE:latest || true
+    - docker build --cache-from $FRONTEND_ADMIN_IMAGE:latest -f Dockerfile.prod -t $FRONTEND_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA -t $FRONTEND_ADMIN_IMAGE:latest .
+    - docker push $FRONTEND_ADMIN_IMAGE --all-tags
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+
+build_backend:
+  stage: build
+  script:
+    - cd backend
+    - docker pull $BACKEND_IMAGE:latest || true
+    - docker build --cache-from $BACKEND_IMAGE:latest -f Dockerfile.prod -t $BACKEND_IMAGE:$CI_COMMIT_SHORT_SHA -t $BACKEND_IMAGE:latest .
+    - docker push $BACKEND_IMAGE --all-tags
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+
+deploy_backend:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$GITLAB_KEY_PRODUCTION" | base64 -d | ssh-add -
+  script:
+    - mkdir -p ~/.ssh
+    - touch ~/.ssh/known_hosts
+    - ssh-keyscan -H $BACKEND_SERVER_PROD_IP >> ~/.ssh/known_hosts
+    - ssh $SERVER_PROD_USER@$BACKEND_SERVER_PROD_IP "echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username container-registry-rw --password-stdin"
+    - scp prod_backend.docker-compose.yml $SERVER_PROD_USER@$BACKEND_SERVER_PROD_IP:/root/backend/prod_backend.docker-compose.yml
+    - > 
+      ssh $SERVER_PROD_USER@$BACKEND_SERVER_PROD_IP "
+      docker login $CI_REGISTRY -u container-registry-rw -p $CI_REGISTRY_PASSWORD &&
+      docker pull $BACKEND_IMAGE:latest && 
+      docker compose -f backend/prod_backend.docker-compose.yml up -d --force-recreate
+      "
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+
+deploy_frontend:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$GITLAB_KEY_PRODUCTION" | base64 -d | ssh-add -
+  script:
+    - mkdir -p ~/.ssh
+    - touch ~/.ssh/known_hosts
+    - ssh-keyscan -H $FRONTEND_SERVER_PROD_IP >> ~/.ssh/known_hosts
+    - ssh $SERVER_PROD_USER@$FRONTEND_SERVER_PROD_IP "echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username container-registry-rw --password-stdin"
+    - scp prod_frontend.docker-compose.yml $SERVER_PROD_USER@$FRONTEND_SERVER_PROD_IP:/root/frontend/prod_frontend.docker-compose.yml
+    - >
+      ssh $SERVER_PROD_USER@$FRONTEND_SERVER_PROD_IP "
+      docker login $CI_REGISTRY -u container-registry-rw -p $CI_REGISTRY_PASSWORD &&
+      docker pull $FRONTEND_SITE_IMAGE:latest && 
+      docker pull $FRONTEND_ADMIN_IMAGE:latest &&
+      docker compose -f frontend/prod_frontend.docker-compose.yml up -d --force-recreate
+      "
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"

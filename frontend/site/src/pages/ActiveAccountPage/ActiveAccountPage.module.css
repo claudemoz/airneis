@@ -1,0 +1,45 @@
+.container{
+  height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.formInput{
+  width: 48px;
+  height: 48px;
+  border: 2 solid rgb(215, 214, 214);
+  text-align: center;
+  outline: none;
+  font-size: 20px;
+  background: transparent;
+  border-radius: 4px;
+}
+
+#activeAccount input[type='number']::-webkit-inner-spin-button,
+#activeAccount input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.activeButton {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.button {
+  width: 350px;
+  border: solid 2px #fff;
+  padding: 15px;
+  font-weight: bold;
+  color:  #fff;;
+  background-color: var(--darkBlue);
+}
+
+.formSpan{
+  font-size: 13px;
+  color: var(--darkBlue);
+}
